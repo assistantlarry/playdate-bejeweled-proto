@@ -1,0 +1,12 @@
+{
+  "from_email": "assistantlarry69@outlook.com",
+  "to_email": "dylan.cantrick@gmail.com",
+  "subject": "Your Daily Morning Brief",
+  "smtp_host": "smtp.office365.com",
+  "smtp_port": 587,
+  "smtp_user": "assistantlarry69@outlook.com",
+  "smtp_pass": "biglarryguy123",
+  "cnn_rss": "http://rss.cnn.com/rss/edition.rss",
+  "article_count": 3,
+  "calendar_file": "/home/assistantlarry/Vault/newsletter-calendar.md"
+}
