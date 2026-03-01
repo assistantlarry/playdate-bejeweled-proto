@@ -1,0 +1,7 @@
+name=Match3Prototype
+author=Assistant Larry
+description=Minimal Playdate match-3 prototype
+bundleID=com.assistantlarry.match3prototype
+version=1.0.0
+buildNumber=1
+imagePath=
