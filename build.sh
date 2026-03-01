@@ -12,7 +12,7 @@ if [ -z "${PLAYDATE_SDK_PATH:-}" ]; then
   fi
 fi
 PDC="$PLAYDATE_SDK_PATH/bin/pdc"
-OUTDIR="build"
+OUTDIR="/home/assistantlarry/playdate-builds"
 mkdir -p "$OUTDIR"
 "$PDC" -sdkpath "$PLAYDATE_SDK_PATH" source "$OUTDIR/Match3Prototype.pdx"
 echo "Built $OUTDIR/Match3Prototype.pdx"
