@@ -5,14 +5,17 @@ import "CoreLibs/sprites"
 local gfx = playdate.graphics
 
 local GRID = 6
-local TILE = 24
-local OX = 40
-local OY = 40
+-- Make board fill vertical space more aggressively on 400x240 screen
+local TILE = 34
+local BOARD_PX = GRID * TILE
+local OX = math.floor((400 - BOARD_PX) / 2)
+local OY = 24
 local TYPES = 5
 
 local board = {}
 local cx, cy = 1, 1
 local selected = nil
+local blink = 0
 
 local function randTile()
   return math.random(1, TYPES)
@@ -114,7 +117,8 @@ end
 
 local function drawBoard()
   gfx.clear(gfx.kColorWhite)
-  gfx.drawText("Match-3 Proto", 12, 12)
+  gfx.drawText("Match-3 Proto", 12, 6)
+  gfx.drawText("D-pad move  A select/swap", 12, 20)
 
   for y=1,GRID do
     for x=1,GRID do
@@ -127,10 +131,36 @@ local function drawBoard()
     end
   end
 
-  gfx.setLineWidth(2)
-  gfx.drawRect(OX + (cx-1)*TILE, OY + (cy-1)*TILE, TILE, TILE)
+  local px = OX + (cx-1)*TILE
+  local py = OY + (cy-1)*TILE
+
+  -- Highly visible cursor: pulsing double-border + corner ticks
+  local pulseOn = (blink % 30) < 15
+  gfx.setLineWidth(3)
+  gfx.setColor(gfx.kColorBlack)
+  gfx.drawRect(px, py, TILE, TILE)
+  if pulseOn then
+    gfx.setLineWidth(1)
+    gfx.drawRect(px+3, py+3, TILE-6, TILE-6)
+  end
+
+  -- corner ticks for visibility on any tile shade
+  local t = 6
+  gfx.drawLine(px, py, px+t, py)
+  gfx.drawLine(px, py, px, py+t)
+  gfx.drawLine(px+TILE, py, px+TILE-t, py)
+  gfx.drawLine(px+TILE, py, px+TILE, py+t)
+  gfx.drawLine(px, py+TILE, px+t, py+TILE)
+  gfx.drawLine(px, py+TILE, px, py+TILE-t)
+  gfx.drawLine(px+TILE, py+TILE, px+TILE-t, py+TILE)
+  gfx.drawLine(px+TILE, py+TILE, px+TILE, py+TILE-t)
+
   if selected then
-    gfx.drawRect(OX + (selected.x-1)*TILE + 3, OY + (selected.y-1)*TILE + 3, TILE-6, TILE-6)
+    local sx = OX + (selected.x-1)*TILE
+    local sy = OY + (selected.y-1)*TILE
+    gfx.setLineWidth(2)
+    gfx.drawRect(sx+4, sy+4, TILE-8, TILE-8)
+    gfx.drawText("SELECTED", 300, 8)
   end
 end
 
@@ -139,6 +169,7 @@ local function adjacent(ax,ay,bx,by)
 end
 
 function playdate.update()
+  blink += 1
   if playdate.buttonJustPressed(playdate.kButtonLeft) then cx = math.max(1, cx-1) end
   if playdate.buttonJustPressed(playdate.kButtonRight) then cx = math.min(GRID, cx+1) end
   if playdate.buttonJustPressed(playdate.kButtonUp) then cy = math.max(1, cy-1) end
