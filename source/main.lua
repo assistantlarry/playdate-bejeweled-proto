@@ -15,7 +15,6 @@ local TYPES = 5
 local board = {}
 local cx, cy = 1, 1
 local selected = nil
-local blink = 0
 
 local function randTile()
   return math.random(1, TYPES)
@@ -134,15 +133,12 @@ local function drawBoard()
   local px = OX + (cx-1)*TILE
   local py = OY + (cy-1)*TILE
 
-  -- Highly visible cursor: pulsing double-border + corner ticks
-  local pulseOn = (blink % 30) < 15
+  -- Highly visible cursor: static double-border (no global blink side effects)
   gfx.setLineWidth(3)
   gfx.setColor(gfx.kColorBlack)
   gfx.drawRect(px, py, TILE, TILE)
-  if pulseOn then
-    gfx.setLineWidth(1)
-    gfx.drawRect(px+3, py+3, TILE-6, TILE-6)
-  end
+  gfx.setLineWidth(1)
+  gfx.drawRect(px+3, py+3, TILE-6, TILE-6)
 
   -- corner ticks for visibility on any tile shade
   local t = 6
@@ -169,7 +165,6 @@ local function adjacent(ax,ay,bx,by)
 end
 
 function playdate.update()
-  blink += 1
   if playdate.buttonJustPressed(playdate.kButtonLeft) then cx = math.max(1, cx-1) end
   if playdate.buttonJustPressed(playdate.kButtonRight) then cx = math.min(GRID, cx+1) end
   if playdate.buttonJustPressed(playdate.kButtonUp) then cy = math.max(1, cy-1) end
